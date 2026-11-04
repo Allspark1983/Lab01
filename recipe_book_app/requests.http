@@ -1,0 +1,199 @@
+# LABS 3–9: Run this app from the recipe_book_app folder.
+# npm install -> npm run setup -> edit .env -> npm run seed -> npm run dev
+# Stop the root Labs 1–2 app first: both apps use port 3000.
+#
+# VS Code REST Client: click Send Request above an individual request.
+# Run createRecipe before requests that use its returned recipeId.
+# Run addReview before requests that use reviewId; run login before profile.
+# In ARC/Postman, replace {{...}} expressions with actual URLs, IDs or tokens.
+#
+# DEFAULT: recipe/review writes and AI routes are public; only /profile needs JWT.
+# If REQUIRE_AUTH_FOR_WRITES=true, first run signup/login, then add this header
+# immediately before the blank line in EVERY recipe/review write and BOTH AI requests:
+# Authorization: Bearer {{login.response.body.$.accessToken}}
+#
+# Use localhost inside the running Codespace. For an external client, use the
+# forwarded port URL and its required GitHub access. Keep this lab server private.
+@baseUrl = http://localhost:3000
+@seedRecipeId = 507f1f77bcf86cd799439031
+
+### Home route — expected 200
+GET {{baseUrl}}/
+
+### Helper: valid cuisine names — expected Italian, Indian, Mexican after seeding
+GET {{baseUrl}}/cuisines
+
+### Helper: valid tag names
+GET {{baseUrl}}/tags
+
+### Lab 3: List recipes; copy an _id if you imported your own sample records
+GET {{baseUrl}}/recipes
+
+### Lab 3: Read the seeded Spaghetti Carbonara recipe (read-only example)
+GET {{baseUrl}}/recipes/{{seedRecipeId}}
+
+### Lab 3: Name contains chicken, ignoring case
+GET {{baseUrl}}/recipes?name=chicken
+
+### Lab 3: Cuisine contains Italian, ignoring case
+GET {{baseUrl}}/recipes?cuisine=Italian
+
+### Lab 3: ANY listed tag (OR)
+GET {{baseUrl}}/recipes?tags=quick,easy
+
+### Lab 3: ALL listed ingredient terms (AND), partial and case-insensitive
+GET {{baseUrl}}/recipes?ingredients=tomato,garam
+
+### Lab 3: Combine filters with AND
+GET {{baseUrl}}/recipes?cuisine=Indian&tags=spicy
+
+### Lab 4: Create a practice pizza — expected 201 and recipeId
+# @name createRecipe
+POST {{baseUrl}}/recipes
+Content-Type: application/json
+
+{
+  "name": "Practice Margherita Pizza",
+  "cuisine": "Italian",
+  "prepTime": 20,
+  "cookTime": 15,
+  "servings": 4,
+  "ingredients": [
+    {"name": "pizza dough", "amount": 1, "unit": "ball"},
+    {"name": "tomato sauce", "amount": 100, "unit": "ml"},
+    {"name": "mozzarella cheese", "amount": 200, "unit": "g"},
+    {"name": "fresh basil", "amount": 10, "unit": "leaves"}
+  ],
+  "instructions": [
+    "Preheat the oven to 220 degrees Celsius.",
+    "Roll out the dough and add the sauce and cheese.",
+    "Bake until the base is cooked and the cheese has melted.",
+    "Add the basil and serve."
+  ],
+  "tags": ["quick", "easy", "vegetarian"]
+}
+
+### Read the pizza you just created; run createRecipe first
+GET {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}
+
+### Lab 5: Update ALL eight recipe fields — expected 200
+# You can send this again after adding a review: that review will be preserved.
+PUT {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}
+Content-Type: application/json
+
+{
+  "name": "Updated Practice Margherita Pizza",
+  "cuisine": "Italian",
+  "prepTime": 25,
+  "cookTime": 20,
+  "servings": 6,
+  "ingredients": [
+    {"name": "pizza dough", "amount": 1, "unit": "ball"},
+    {"name": "tomato sauce", "amount": 150, "unit": "ml"},
+    {"name": "fresh mozzarella", "amount": 250, "unit": "g"},
+    {"name": "fresh basil", "amount": 15, "unit": "leaves"}
+  ],
+  "instructions": [
+    "Preheat the oven to 230 degrees Celsius.",
+    "Roll out the dough and spread the sauce.",
+    "Add sliced mozzarella and bake until cooked.",
+    "Add the basil and serve."
+  ],
+  "tags": ["popular", "easy", "vegetarian"]
+}
+
+### Lab 7: Add a review to YOUR practice pizza — expected 201 and reviewId
+# @name addReview
+POST {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}/reviews
+Content-Type: application/json
+
+{
+  "user": "Adzan",
+  "rating": 4,
+  "comment": "Easy to follow and a good family meal."
+}
+
+### Lab 7: Read the recipe to see the embedded reviews array
+GET {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}
+
+### Lab 7: Update that review — expected 200
+PUT {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}/reviews/{{addReview.response.body.$.reviewId}}
+Content-Type: application/json
+
+{
+  "user": "Adzan",
+  "rating": 5,
+  "comment": "Made it again with extra basil. Even better!"
+}
+
+### Lab 7: Remove that review — expected 200; repeat returns 404
+DELETE {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}/reviews/{{addReview.response.body.$.reviewId}}
+
+### Lab 8: Sign up — expected 201; existing email returns 409, then use login
+# @name signup
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "email": "adzan@example.com",
+  "password": "class-demo-123"
+}
+
+### Lab 8: Log in — expected 200 and accessToken (expires in one hour)
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "adzan@example.com",
+  "password": "class-demo-123"
+}
+
+### Lab 8: Protected profile — run login first; expected 200
+GET {{baseUrl}}/profile
+Authorization: Bearer {{login.response.body.$.accessToken}}
+
+### Lab 8: Profile without a token — expected 401
+GET {{baseUrl}}/profile
+
+### Lab 8: Wrong password — expected 401
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "adzan@example.com",
+  "password": "not-the-correct-password"
+}
+
+### Lab 9: AI search — requires your GEMINI_API_KEY in .env and a server restart
+# q: up to 1,000 characters. Response includes recipes and interpreted searchParams.
+GET {{baseUrl}}/ai/recipes?q=quick%20Italian%20pasta
+
+### Lab 9: Parse and SAVE a recipe — requires Gemini; expected 201 and recipeId
+# @name createAiRecipe
+POST {{baseUrl}}/ai/recipes
+Content-Type: application/json
+
+{
+  "recipeText": "Create an Italian tomato pasta for 2 people. Preparation takes 10 minutes and cooking takes 15 minutes. Use 200 g spaghetti, 150 g tomato puree, 1 tbsp olive oil and salt to taste. Boil the spaghetti, simmer the tomato puree with olive oil, combine and serve. Tag it quick and vegetarian."
+}
+
+### Read the recipe created by AI; run createAiRecipe successfully first
+GET {{baseUrl}}/recipes/{{createAiRecipe.response.body.$.recipeId}}
+
+### Optional cleanup: delete only the recipe you just created through AI
+# Requires successful createAiRecipe; this does not target a seed document.
+DELETE {{baseUrl}}/recipes/{{createAiRecipe.response.body.$.recipeId}}
+
+### Input check: malformed ObjectId — expected 400
+GET {{baseUrl}}/recipes/not-an-object-id
+
+### Input check: absent AI query — expected 400 (or 401 if optional auth is on)
+GET {{baseUrl}}/ai/recipes
+
+### Lab 6: Delete YOUR practice pizza LAST — expected 200
+# Run createRecipe first. This uses its response ID, never the seed recipe ID.
+DELETE {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}
+
+### Confirm your deleted practice pizza is gone — expected 404
+GET {{baseUrl}}/recipes/{{createRecipe.response.body.$.recipeId}}

@@ -1,0 +1,41 @@
+# LABS 1–2: Run npm install, then npm run dev in the repository root.
+# With VS Code's REST Client extension, click Send Request above one request.
+# In a browser, append each GET path to your running server's URL.
+# For a client outside Codespaces, replace baseUrl with your forwarded port URL.
+@baseUrl = http://localhost:3000
+
+### Lab 1: Home route — expected JSON: {"message":"Hello World!"}
+GET {{baseUrl}}/
+
+### Lab 2: Route parameter — expected text: Hi, Adzan
+GET {{baseUrl}}/hello/Adzan
+
+### Lab 2: Query strings — expected firstName John and lastName Wick
+GET {{baseUrl}}/echo?firstName=John&lastName=Wick
+
+### HANDS ON 1: Difference is n1 - n2 — expected text: 11
+GET {{baseUrl}}/difference/15/4
+
+### Difference with a negative value — expected text: -8
+GET {{baseUrl}}/difference/-5/3
+
+### Difference with a decimal value — expected text: 2.5
+GET {{baseUrl}}/difference/7.5/5
+
+### Invalid numeric input — expected 400
+GET {{baseUrl}}/difference/hello/5
+
+### HANDS ON 2: Scream — expected text: HELLO ADZAN
+GET {{baseUrl}}/scream?message=hello&recipient=Adzan
+
+### A space in the message is encoded as %20 — expected: HELLO THERE ADZAN
+GET {{baseUrl}}/scream?message=hello%20there&recipient=Adzan
+
+### Missing recipient — expected 400
+GET {{baseUrl}}/scream?message=hello
+
+### Missing echo query key — expected 400
+GET {{baseUrl}}/echo?firstName=John
+
+### An unknown route — expected 404
+GET {{baseUrl}}/not-a-route

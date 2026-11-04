@@ -1,0 +1,46 @@
+name: Lab tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            recipe_book_app/package-lock.json
+      - name: Install and test Labs 1–2
+        run: |
+          npm ci
+          npm test
+      - name: Install and test Labs 3–9
+        working-directory: recipe_book_app
+        env:
+          TEST_MONGO_URI: mongodb://127.0.0.1:27017
+        run: |
+          npm ci
+          npm test
+          npm run test:integration

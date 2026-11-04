@@ -1,0 +1,222 @@
+[
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439031"
+    },
+    "name": "Spaghetti Carbonara",
+    "cuisine": {
+      "_id": {
+        "$oid": "507f1f77bcf86cd799439011"
+      },
+      "name": "Italian"
+    },
+    "prepTime": 15,
+    "cookTime": 15,
+    "servings": 4,
+    "ingredients": [
+      {
+        "name": "spaghetti",
+        "amount": 400,
+        "unit": "g"
+      },
+      {
+        "name": "pancetta",
+        "amount": 150,
+        "unit": "g"
+      },
+      {
+        "name": "eggs",
+        "amount": 4,
+        "unit": "whole"
+      },
+      {
+        "name": "Pecorino Romano cheese",
+        "amount": 50,
+        "unit": "g"
+      },
+      {
+        "name": "black pepper",
+        "amount": 2,
+        "unit": "tsp"
+      }
+    ],
+    "instructions": [
+      "Cook spaghetti in salted boiling water until al dente.",
+      "Fry pancetta until crispy.",
+      "Beat eggs with grated cheese and pepper.",
+      "Toss hot pasta with pancetta, then mix in egg mixture.",
+      "Serve immediately with extra cheese and pepper."
+    ],
+    "tags": [
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439021"
+        },
+        "name": "pasta"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439022"
+        },
+        "name": "quick"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439023"
+        },
+        "name": "easy"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439032"
+    },
+    "name": "Chicken Tikka Masala",
+    "cuisine": {
+      "_id": {
+        "$oid": "507f1f77bcf86cd799439012"
+      },
+      "name": "Indian"
+    },
+    "prepTime": 30,
+    "cookTime": 40,
+    "servings": 6,
+    "ingredients": [
+      {
+        "name": "chicken breast",
+        "amount": 800,
+        "unit": "g"
+      },
+      {
+        "name": "yogurt",
+        "amount": 200,
+        "unit": "ml"
+      },
+      {
+        "name": "lemon juice",
+        "amount": 2,
+        "unit": "tbsp"
+      },
+      {
+        "name": "garam masala",
+        "amount": 2,
+        "unit": "tsp"
+      },
+      {
+        "name": "tomato puree",
+        "amount": 400,
+        "unit": "g"
+      },
+      {
+        "name": "heavy cream",
+        "amount": 200,
+        "unit": "ml"
+      }
+    ],
+    "instructions": [
+      "Marinate chicken in yogurt, lemon juice, and spices for 2 hours.",
+      "Grill or broil chicken until charred.",
+      "Simmer tomato puree with spices.",
+      "Add grilled chicken and cream to the sauce.",
+      "Simmer until chicken is cooked through and sauce thickens."
+    ],
+    "tags": [
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439024"
+        },
+        "name": "curry"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439025"
+        },
+        "name": "spicy"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439026"
+        },
+        "name": "popular"
+      }
+    ],
+    "reviews": []
+  },
+  {
+    "_id": {
+      "$oid": "507f1f77bcf86cd799439033"
+    },
+    "name": "Guacamole",
+    "cuisine": {
+      "_id": {
+        "$oid": "507f1f77bcf86cd799439013"
+      },
+      "name": "Mexican"
+    },
+    "prepTime": 15,
+    "cookTime": 0,
+    "servings": 4,
+    "ingredients": [
+      {
+        "name": "avocados",
+        "amount": 3,
+        "unit": "whole"
+      },
+      {
+        "name": "lime juice",
+        "amount": 1,
+        "unit": "tbsp"
+      },
+      {
+        "name": "red onion",
+        "amount": 0.25,
+        "unit": "whole"
+      },
+      {
+        "name": "tomato",
+        "amount": 1,
+        "unit": "whole"
+      },
+      {
+        "name": "cilantro",
+        "amount": 2,
+        "unit": "tbsp"
+      },
+      {
+        "name": "salt",
+        "amount": 0.5,
+        "unit": "tsp"
+      }
+    ],
+    "instructions": [
+      "Mash avocados in a bowl.",
+      "Finely chop onion, tomato, and cilantro.",
+      "Mix all ingredients together.",
+      "Season with salt and lime juice to taste.",
+      "Serve immediately with tortilla chips."
+    ],
+    "tags": [
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439027"
+        },
+        "name": "appetizer"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439028"
+        },
+        "name": "dip"
+      },
+      {
+        "_id": {
+          "$oid": "507f1f77bcf86cd799439029"
+        },
+        "name": "vegetarian"
+      }
+    ],
+    "reviews": []
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "name": "lab01-express-basics",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Labs 1–2: Express routes, parameters, and hands-on exercises",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "cors": "2.8.6",
+    "express": "5.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.14"
+  }
+}
