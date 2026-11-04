@@ -212,9 +212,9 @@ Missing configuration returns `503`; provider failures or invalid output return 
 
 Integration tests start a disposable MongoDB process, which may require a binary download. Alternatively, set `TEST_MONGO_URI` to a suitable test server. They create/remove only a fresh `recipe_book_test_*` database, not `recipe_book`.
 
-The included GitHub **Lab tests** workflow is configured to run all suites on pushes and pull requests using Node 24 and a MongoDB service. Once the files are uploaded, open the repository's **Actions** tab for actual results. Atlas credentials and live Gemini access still need verification in your own environment.
+The GitHub **Lab tests** workflow runs all suites on pushes and pull requests using Node 24 and a MongoDB service. Open the repository's **Actions** tab for current results. Atlas credentials and live Gemini access still need verification in your own environment.
 
-Verification at preparation: all **7 Express HTTP tests** and **12 Gemini unit tests** passed. The **16 MongoDB integration tests** are included but have not passed a runtime check yet: the authoring environment could not start MongoDB. No live Atlas or Gemini request was made.
+Verified on **4 November 2026**: **all 35 tests passed** — 7 Express HTTP tests, 12 Gemini unit tests, and 16 integration tests against a real MongoDB server. There were no failures or skipped tests. See the [successful GitHub Actions run](https://github.com/Allspark1983/Lab01/actions/runs/41783686409) for source commit `82edd111`. AI responses were mocked for tests; no live Atlas or Gemini request was made.
 
 ## 8. Troubleshooting and handout corrections
 
