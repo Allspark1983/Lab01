@@ -1,9 +1,10 @@
 // LAB 3: Reuse one MongoClient instead of reconnecting for every request.
 const { MongoClient, ServerApiVersion } = require('mongodb');
+const { validateMongoUri } = require('./dbDiagnostics');
 let client = null;
 
 async function connect(uri, dbname) {
-  if (!uri) throw new Error('Set MONGO_URI in your .env file.');
+  validateMongoUri(uri);
   if (client) return client.db(dbname);
 
   const candidate = new MongoClient(uri, {
@@ -16,7 +17,8 @@ async function connect(uri, dbname) {
     client = candidate;
     return client.db(dbname);
   } catch (error) {
-    await candidate.close();
+    // Preserve the connection failure even if cleanup also fails.
+    try { await candidate.close(); } catch { /* The original error is more useful. */ }
     throw error;
   }
 }

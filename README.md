@@ -71,9 +71,16 @@ In Codespaces, use Atlas unless you separately started MongoDB inside that Codes
 Still inside `recipe_book_app`:
 
 ```bash
+npm run check-db
 npm run seed
 npm run dev
 ```
+
+`check-db` connects and pings without changing data. It prints a diagnostic category and suggested next step without printing credentials. A successful check confirms connectivity; seeding also checks write access. Setup's `.env already exists` message is normal: edit and save that existing file to change your connection settings.
+
+If the check reports `[LOCAL_CONNECTION]` while you intend to use Atlas, replace the setup default in `recipe_book_app/.env` with your Atlas URI. `[URI_PLACEHOLDER]` means a placeholder such as `<db_password>` still needs replacing. `[AUTHENTICATION]` means to check the database user's login and URI encoding; `[PERMISSIONS]` means the user needs access to the database selected by `DB_NAME`. An exported terminal `MONGO_URI` takes precedence over `.env`; the check reports when this applies.
+
+For `[NETWORK]`, check cluster availability and Atlas **Network Access**. Allow the outbound IP of the environment running Node.js. In Codespaces, Atlas's **Add Current IP Address** button in your laptop browser can identify your laptop's IP instead of the Codespace's. To look up the Codespace's public IPv4 address, run `curl -4 https://api.ipify.org` **inside its terminal**, then add that single IP to Atlas's access list. Codespace IPs can change; this is one possible cause of a connection timeout, not a diagnosis by itself. See [Atlas connection troubleshooting](https://www.mongodb.com/docs/atlas/troubleshoot-connection/) and [GitHub's Codespaces networking guidance](https://docs.github.com/en/codespaces/developing-in-a-codespace/connecting-to-a-private-network).
 
 An empty database receives **3 cuisines, 9 tags, and 3 recipes**. Seeding prints inserted/total counts and preserves existing documents and edits. Open `/recipes` to see Spaghetti Carbonara, Chicken Tikka Masala, and Guacamole.
 
@@ -206,9 +213,9 @@ Missing configuration returns `503`; provider failures or invalid output return 
 | Working folder | Command | What runs |
 | --- | --- | --- |
 | Repository root | `npm test` | Express basics HTTP tests |
-| `recipe_book_app` | `npm test` | Gemini unit tests; no database/key required |
+| `recipe_book_app` | `npm test` | Gemini and credential-safe database diagnostic tests; no database/key required |
 | `recipe_book_app` | `npm run test:integration` | HTTP, CRUD, reviews, authentication, and seed tests against real MongoDB |
-| `recipe_book_app` | `npm run test:all` | Both recipe-app suites |
+| `recipe_book_app` | `npm run test:all` | All recipe-app suites |
 
 Integration tests start a disposable MongoDB process, which may require a binary download. Alternatively, set `TEST_MONGO_URI` to a suitable test server. They create/remove only a fresh `recipe_book_test_*` database, not `recipe_book`.
 
@@ -222,7 +229,7 @@ Verified on **4 November 2026**: **all 35 tests passed** — 7 Express HTTP test
 | --- | --- |
 | Port already in use | Stop the other app with Ctrl+C. |
 | `/recipes` not found | Start the app inside `recipe_book_app`. |
-| Database startup fails | Check MongoDB is running, or Atlas URI/user/IP access. |
+| Database startup or seed fails | Run `npm run check-db` inside `recipe_book_app` and follow its diagnostic. |
 | Secret configuration error | Run setup; for an existing placeholder, run `npm run secret` and update `.env`. |
 | Invalid cuisine/tag | Seed, then check `/cuisines` and `/tags`. |
 | `400` | Check JSON, required fields, types, and the 24-character ID. |

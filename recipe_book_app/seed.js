@@ -2,6 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { BSON } = require('mongodb');
+const { diagnoseMongoError } = require('./dbDiagnostics');
 
 function readSample(collectionName) {
   const file = path.join(__dirname, 'data', `${collectionName}.json`);
@@ -85,8 +86,8 @@ async function main() {
     if (error.code === 11000) {
       console.error('A sample ID is already used by another document. Existing documents were preserved. Check the matching collection in Compass.');
     } else {
-      // Avoid printing connection strings or credential-bearing driver errors.
-      console.error('Could not finish seeding. Check MONGO_URI, database credentials, and MongoDB network access.');
+      console.error('Could not finish seeding.');
+      console.error(diagnoseMongoError(error, process.env.MONGO_URI));
     }
     process.exitCode = 1;
   } finally {

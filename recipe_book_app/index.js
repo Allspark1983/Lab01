@@ -2,6 +2,7 @@
 require('dotenv').config({ path: require('node:path').join(__dirname, '.env'), quiet: true });
 const { connect, close, ensureIndexes } = require('./db');
 const { createApp } = require('./app');
+const { diagnoseMongoError } = require('./dbDiagnostics');
 
 async function main() {
   let server;
@@ -34,7 +35,7 @@ async function main() {
   } catch (error) {
     // Do not print connection strings, database credentials, or API keys.
     const configurationError = /^(Configure TOKEN_SECRET|Set MONGO_URI|PORT must)/.test(error.message);
-    console.error(configurationError ? error.message : 'Startup failed. Check MongoDB is reachable, your database login, Atlas network access, and duplicate user emails.');
+    console.error(configurationError ? error.message : 'Startup failed.\n' + diagnoseMongoError(error, process.env.MONGO_URI));
     await close();
     process.exitCode = 1;
   }

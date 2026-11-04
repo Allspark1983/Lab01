@@ -11,9 +11,10 @@
     "setup": "node setup.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "check-db": "node checkDb.js",
     "seed": "node seed.js",
     "secret": "node generateSecret.js",
-    "test": "node --test test/gemini.test.js",
+    "test": "node --test test/gemini.test.js test/dbDiagnostics.test.js",
     "test:all": "node --test test/*.test.js",
     "test:integration": "node --test test/integration.test.js"
   },

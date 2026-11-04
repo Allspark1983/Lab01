@@ -5,6 +5,9 @@ const { test, before, beforeEach, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { once } = require('node:events');
 const { randomUUID, randomBytes } = require('node:crypto');
+const { execFile } = require('node:child_process');
+const { promisify } = require('node:util');
+const path = require('node:path');
 const { MongoClient, ObjectId } = require('mongodb');
 const { MongoMemoryServer } = require('mongodb-memory-server-core');
 const bcrypt = require('bcrypt');
@@ -25,6 +28,7 @@ let baseUrl;
 let aiSearchOutput;
 let aiRecipeOutput;
 let aiCalls;
+let testMongoUri;
 
 function pizza(overrides = {}) {
   return {
@@ -76,6 +80,7 @@ before(async () => {
     uri = mongo.getUri();
   }
   client = new MongoClient(uri, { serverSelectionTimeoutMS: 10000 });
+  testMongoUri = uri;
   await client.connect();
   db = client.db(databaseName);
   await db.command({ ping: 1 });
@@ -102,6 +107,18 @@ after(async () => {
   if (db) await db.dropDatabase();
   if (client) await client.close();
   if (mongo) await mongo.stop();
+});
+
+test('check-db connects, pings, and closes without changing the seeded data', async () => {
+  const beforeCount = await db.collection('recipes').countDocuments();
+  const result = await promisify(execFile)(process.execPath, [path.join(__dirname, '..', 'checkDb.js')], {
+    env: { ...process.env, MONGO_URI: testMongoUri, DB_NAME: databaseName, TOKEN_SECRET: '' },
+    timeout: 15000
+  });
+  assert.match(result.stdout, /connection and ping succeeded/);
+  assert.equal(result.stderr, '');
+  assert.ok(!result.stdout.includes(testMongoUri));
+  assert.equal(await db.collection('recipes').countDocuments(), beforeCount);
 });
 
 test('seeded recipes can be listed and read using returned ObjectIds', async () => {
